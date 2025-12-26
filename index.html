@@ -1,0 +1,1327 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Menu, X, BookOpen, ChevronRight, Layers, Zap, Atom, Cpu, Activity, Ruler, MessageCircle, Send, Minimize2, Loader2, User, Bot } from 'lucide-react';
+
+// --- Diagram Component (SVG Generator) ---
+const PhysicsDiagram = ({ type }) => {
+  const textStyle = { fontSize: "12px", fill: "#374151", fontFamily: "sans-serif" };
+  const borderStyle = "bg-white border-2 border-slate-200 rounded-lg p-4 w-full h-64 mx-auto my-4 flex justify-center items-center shadow-sm";
+
+  switch (type) {
+    case "thin_film":
+      return (
+        <div className={borderStyle}>
+          <svg viewBox="0 0 400 200" className="w-full h-full">
+            <defs>
+              <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L9,3 z" fill="#ef4444" />
+              </marker>
+            </defs>
+            <rect x="50" y="80" width="300" height="60" fill="#e0f2fe" stroke="#94a3b8" />
+            <text x="360" y="110" {...textStyle}>Film (μ, t)</text>
+            <path d="M 20 20 L 100 80" stroke="red" strokeWidth="2" markerEnd="url(#arrow)" />
+            <path d="M 100 80 L 180 20" stroke="orange" strokeWidth="2" markerEnd="url(#arrow)" />
+            <path d="M 100 80 L 150 140" stroke="red" strokeWidth="1.5" strokeDasharray="4" />
+            <path d="M 150 140 L 200 80" stroke="red" strokeWidth="1.5" strokeDasharray="4" />
+            <path d="M 200 80 L 280 20" stroke="orange" strokeWidth="2" markerEnd="url(#arrow)" />
+            <text x="10" y="15" {...textStyle}>Incident</text>
+            <text x="180" y="15" {...textStyle}>R1</text>
+            <text x="280" y="15" {...textStyle}>R2</text>
+          </svg>
+        </div>
+      );
+    case "wedge_film":
+      return (
+        <div className={borderStyle}>
+          <svg viewBox="0 0 400 200" className="w-full h-full">
+            <path d="M 50 150 L 350 50 L 350 150 Z" fill="#e0f2fe" stroke="black" strokeWidth="2"/>
+            <text x="60" y="140" {...textStyle}>θ</text>
+            <path d="M 150 20 L 150 115" stroke="red" strokeWidth="2" />
+            <path d="M 150 115 L 120 20" stroke="orange" strokeWidth="2" />
+            <text x="200" y="170" {...textStyle}>Glass Plate</text>
+          </svg>
+        </div>
+      );
+    case "newtons_rings":
+      return (
+        <div className={borderStyle}>
+          <svg viewBox="0 0 200 200" className="w-full h-full">
+            <circle cx="100" cy="100" r="5" fill="black" />
+            <circle cx="100" cy="100" r="25" stroke="black" strokeWidth="3" fill="none" />
+            <circle cx="100" cy="100" r="45" stroke="black" strokeWidth="2" fill="none" />
+            <circle cx="100" cy="100" r="65" stroke="black" strokeWidth="1.5" fill="none" />
+            <circle cx="100" cy="100" r="85" stroke="black" strokeWidth="1" fill="none" />
+            <text x="50" y="195" {...textStyle}>Newton's Rings</text>
+          </svg>
+        </div>
+      );
+    case "laser_components":
+        return (
+            <div className={borderStyle}>
+            <svg viewBox="0 0 400 150" className="w-full h-full">
+                <rect x="60" y="40" width="280" height="70" fill="#fce7f3" stroke="#be185d" strokeWidth="2" />
+                <rect x="50" y="40" width="10" height="70" fill="#374151" />
+                <rect x="340" y="40" width="10" height="70" fill="#9ca3af" />
+                <line x1="70" y1="75" x2="330" y2="75" stroke="red" strokeWidth="4" strokeDasharray="5,5" />
+                <line x1="350" y1="75" x2="390" y2="75" stroke="red" strokeWidth="4" markerEnd="url(#arrow)" />
+                <text x="160" y="30" {...textStyle}>Active Medium</text>
+                <text x="20" y="130" {...textStyle}>100% Mirror</text>
+                <text x="310" y="130" {...textStyle}>Partial Mirror</text>
+            </svg>
+            </div>
+        );
+    case "fiber_na":
+        return (
+            <div className={borderStyle}>
+            <svg viewBox="0 0 400 150" className="w-full h-full">
+                <rect x="50" y="50" width="300" height="50" fill="#e0e7ff" stroke="#4338ca"/>
+                <line x1="0" y1="75" x2="400" y2="75" stroke="#9ca3af" strokeDasharray="4" />
+                <path d="M 0 75 L 50 75 L 150 50 L 250 100 L 350 50" stroke="red" fill="none" strokeWidth="2" />
+                <text x="60" y="40" {...textStyle}>Cladding (n2)</text>
+                <text x="60" y="120" {...textStyle}>Core (n1)</text>
+                <text x="10" y="65" fill="red" fontSize="12" fontWeight="bold">θa</text>
+            </svg>
+            </div>
+        );
+    case "solar_cell":
+        return (
+            <div className={borderStyle}>
+            <svg viewBox="0 0 300 200" className="w-full h-full">
+                <rect x="50" y="60" width="200" height="40" fill="#fef3c7" stroke="black" />
+                <rect x="50" y="100" width="200" height="60" fill="#dbeafe" stroke="black" />
+                <text x="120" y="85" {...textStyle}>N-Region</text>
+                <text x="120" y="135" {...textStyle}>P-Region</text>
+                <path d="M 80 20 L 100 60" stroke="orange" strokeWidth="2" markerEnd="url(#arrow)" />
+                <path d="M 120 20 L 140 60" stroke="orange" strokeWidth="2" markerEnd="url(#arrow)" />
+                <path d="M 160 20 L 180 60" stroke="orange" strokeWidth="2" markerEnd="url(#arrow)" />
+                <text x="10" y="40" fill="orange" fontWeight="bold">Sunlight</text>
+            </svg>
+            </div>
+        );
+     case "hall_effect":
+        return (
+            <div className={borderStyle}>
+            <svg viewBox="0 0 300 200" className="w-full h-full">
+                <rect x="80" y="60" width="140" height="80" fill="#bfdbfe" stroke="blue" strokeWidth="2"/>
+                <line x1="40" y1="100" x2="260" y2="100" stroke="black" strokeWidth="2" markerEnd="url(#arrow)" />
+                <text x="270" y="105" {...textStyle}>Current I</text>
+                <line x1="150" y1="20" x2="150" y2="180" stroke="green" strokeWidth="2" markerEnd="url(#arrow)"/>
+                <text x="160" y="30" fill="green" fontWeight="bold">Magnetic Field B</text>
+                <text x="90" y="50" fill="red" fontWeight="bold">Hall Voltage (Vh)</text>
+                <path d="M 80 60 L 80 40 L 220 40 L 220 60" stroke="red" fill="none" />
+            </svg>
+            </div>
+        );
+    case "afm_setup":
+        return (
+            <div className={borderStyle}>
+            <svg viewBox="0 0 400 200" className="w-full h-full">
+                <rect x="100" y="160" width="200" height="20" fill="#cbd5e1" />
+                <path d="M 100 160 Q 150 150 200 160 T 300 160" stroke="black" fill="none" />
+                <path d="M 50 50 L 180 130" stroke="black" strokeWidth="4" />
+                <path d="M 180 130 L 180 160" stroke="black" strokeWidth="2" />
+                <circle cx="50" cy="50" r="5" fill="black" />
+                <path d="M 250 20 L 180 130" stroke="red" strokeWidth="2" />
+                <path d="M 180 130 L 120 20" stroke="red" strokeWidth="2" />
+                <rect x="100" y="10" width="40" height="20" fill="black" />
+                <text x="260" y="30" {...textStyle}>Laser</text>
+                <text x="80" y="30" fill="white" fontSize="10">Detector</text>
+                <text x="200" y="190" {...textStyle}>Sample Surface</text>
+            </svg>
+            </div>
+        );
+    case "sem_setup":
+        return (
+            <div className={borderStyle}>
+            <svg viewBox="0 0 300 250" className="w-full h-full">
+                <rect x="100" y="20" width="100" height="20" fill="#334155" />
+                <text x="110" y="35" fill="white" fontSize="10">Electron Gun</text>
+                <line x1="150" y1="40" x2="150" y2="200" stroke="#fbbf24" strokeWidth="2" strokeDasharray="4"/>
+                <ellipse cx="150" cy="80" rx="30" ry="10" stroke="black" fill="none" />
+                <text x="190" y="85" {...textStyle}>Lens</text>
+                <rect x="120" y="200" width="60" height="20" fill="#94a3b8" />
+                <text x="130" y="215" {...textStyle}>Sample</text>
+                <circle cx="100" cy="180" r="10" fill="#f87171" />
+                <text x="60" y="185" {...textStyle}>Detector</text>
+            </svg>
+            </div>
+        );
+    default:
+      return null;
+  }
+};
+
+// --- Data Content ---
+
+const modules = [
+  {
+    id: 1,
+    title: "Interference & Diffraction",
+    icon: <Layers size={20} />,
+    description: "Thin films, Newton's Rings, and Gratings",
+    questions: [
+      {
+        id: "m1-q1", number: 1,
+        q: "Why do we observe different colors in thin films in sun light? With neat diagram, derive an expression for optical path difference in interference in thin films of constant thickness due to reflected light. And hence deduce the conditions for constructive and destructive interference.",
+        a: `**Reason for Colors:** When white light (sunlight) falls on a thin film, it splits into coherent rays via reflection from the top and bottom surfaces. These rays interfere. Since the condition for constructive interference (brightness) depends on wavelength (λ), different wavelengths are reinforced at different angles or thicknesses, resulting in colors.
+
+**Derivation:**
+1. Consider a thin film of thickness 't' and refractive index 'μ'.
+2. A ray SA is incident at angle 'i'. Refracted at angle 'r' into the film.
+3. Part is reflected from top surface (Ray 1) and part from bottom (Ray 2).
+4. Path difference (Δ) = μ(AB + BC) - AN.
+5. From geometry: AB = BC = t/cos(r).
+6. AN = AC sin(i). AC = 2t tan(r).
+7. Substituting and using Snell's law (sin i = μ sin r):
+   Δ = 2μt cos(r).
+8. **Correction:** Reflection at a denser medium (top surface) introduces a phase change of π or path change of λ/2.
+   **Total OPD = 2μt cos(r) ± λ/2**
+
+**Conditions:**
+* **Constructive (Maxima):** 2μt cos(r) = (2n - 1)λ/2
+* **Destructive (Minima):** 2μt cos(r) = nλ`,
+        diagram: "thin_film"
+      },
+      {
+        id: "m1-q2", number: 2,
+        q: "What do you mean by thin film? Derive an expression for Optical path difference due to interference of monochromatic ray of reflected light by thin film of constant thickness. Also deduce condition for constructive and destructive interference.",
+        a: `**Thin Film:** A layer of material with thickness comparable to the wavelength of light (micrometers). Examples: Oil on water, soap bubbles.
+
+**Derivation:** (Same as Q1 but specific to monochromatic light)
+* The optical path difference is Δ = 2μt cos(r) - λ/2 (due to Stokes' law phase shift at the top surface).
+
+**Conditions:**
+1.  **Constructive Interference (Bright):**
+    Δ = nλ
+    2μt cos(r) - λ/2 = nλ
+    **2μt cos(r) = (2n + 1)λ/2**
+2.  **Destructive Interference (Dark):**
+    Δ = (2n + 1)λ/2
+    2μt cos(r) - λ/2 = (2n + 1)λ/2
+    **2μt cos(r) = (n + 1)λ ≈ nλ** (where n is integer)`,
+        diagram: "thin_film"
+      },
+      {
+        id: "m1-q3", number: 3,
+        q: "What is the nature of interference fringes in wedge shaped film and why? Derive an expression for bandwidth.",
+        a: `**Nature:** The fringes are straight, parallel, and equidistant.
+**Why:** In a wedge film, the thickness 't' remains constant along lines parallel to the apex of the wedge. Since the condition for interference depends on 't', the loci of constant path difference are straight lines.
+
+**Bandwidth (β) Derivation:**
+1.  For dark fringe: 2μt cos(r) = nλ. For normal incidence (cos r ≈ 1), 2μt = nλ.
+2.  Let wedge angle be θ. Then t = x tan θ ≈ xθ (for small θ), where x is distance from apex.
+3.  So, 2μxθ = nλ => x_n = nλ / (2μθ).
+4.  Next fringe at x_{n+1}: x_{n+1} = (n+1)λ / (2μθ).
+5.  **Bandwidth β** = x_{n+1} - x_n = **λ / (2μθ)**.`,
+        diagram: "wedge_film"
+      },
+      {
+        id: "m1-q4", number: 4,
+        q: "Show that interference fringes in wedge shaped film due to reflected light are equidistant. Consider case of normal incidence.",
+        a: `From the bandwidth derivation:
+The position of the nth dark fringe is x_n = nλ / (2μθ).
+The position of the (n+1)th dark fringe is x_{n+1} = (n+1)λ / (2μθ).
+
+The separation between any two consecutive fringes (β) is:
+β = x_{n+1} - x_n = [ (n+1)λ - nλ ] / (2μθ) = **λ / (2μθ)**.
+
+Since λ, μ, and θ are constants for a given setup, β is constant.
+**Therefore, the fringes are equidistant.**`
+      },
+      {
+        id: "m1-q5", number: 5,
+        q: "What is Anti-Reflection Coatings? Discuss it in details with phase and amplitude conditions.",
+        a: `**ARC:** A thin layer of dielectric material applied to a lens surface to reduce reflection and increase transmission.
+
+**Phase Condition:**
+To cancel reflection, the ray reflected from the top of the coating and the ray reflected from the glass interface must be 180° (π) out of phase.
+Path difference = 2μ_c t.
+Condition for destructive interference: 2μ_c t = λ/2.
+**Thickness t = λ / (4μ_c)** (Quarter wave plate).
+
+**Amplitude Condition:**
+For complete destructive interference, the amplitudes of the two reflected rays must be equal.
+Reflection coefficient r1 = (μ_c - μ_air) / (μ_c + μ_air)
+Reflection coefficient r2 = (μ_g - μ_c) / (μ_g + μ_c)
+For r1 = r2, we get **μ_c = √(μ_air * μ_g)**.`,
+        diagram: "arc"
+      },
+      {
+        id: "m1-q6", number: 6,
+        q: "What do you mean by antireflection coatings? Discuss antireflection coatings in details in terms of path difference, thickness, and refractive indices for thin film.",
+        a: `(Refer to Answer 5)
+1.  **Refractive Index:** The coating material must have a refractive index μ_c intermediate between air (n0) and glass (ng). Ideally, μ_c = √ng.
+2.  **Thickness:** The film thickness must be an odd multiple of λ/4. Minimum thickness t = λ / (4μ_c).
+3.  **Path Difference:** The path difference between rays reflected from the air-coating interface and coating-glass interface must be λ/2 to cause destructive interference in reflection.`
+      },
+      {
+        id: "m1-q7", number: 7,
+        q: "Why fringes in Newton's Rings experiment are Circular? Show that diameter of dark rings are proportional to square root of order/integer?",
+        a: `**Why Circular:** The air film formed between a convex lens and a flat plate has constant thickness along circles centered at the point of contact. Since interference depends on thickness t, the loci of constant t are circles.
+
+**Diameter Proportionality (Dark Rings):**
+1.  Condition for dark fringe: 2t = nλ (ignoring air refractive index μ=1).
+2.  From geometry of chord property: t = r² / (2R), where r is radius of ring, R is radius of curvature.
+3.  Substitute t: 2(r² / 2R) = nλ.
+4.  r² = nλR => r_n = √(nλR).
+5.  Diameter D_n = 2r_n = 2√(nλR).
+6.  **D_n ∝ √n**.`,
+        diagram: "newtons_rings"
+      },
+      {
+        id: "m1-q8", number: 8,
+        q: "Explain determination of wavelengths of visible spectra using plane diffraction grating.",
+        a: `**Principle:** A diffraction grating disperses polychromatic light into its constituent wavelengths.
+**Formula:** (a + b) sin θ = nλ
+Where (a+b) is the grating element, θ is diffraction angle, n is order.
+
+**Procedure:**
+1.  Adjust spectrometer for parallel light.
+2.  Place grating on prism table. Adjust for normal incidence.
+3.  Observe the first order spectrum (n=1).
+4.  Measure angle θ for each color (violet to red).
+5.  Know 'N' (lines per inch/cm) to find (a+b) = 1/N.
+6.  Calculate λ = [(a+b) sin θ] / n.`
+      },
+      {
+        id: "m1-q9", number: 9,
+        q: "Why Newton's rings are circular in nature? A Newton's ring setup is illuminated by a beam of light containing two wavelengths; 4500 Å and 4000 Å. It is found that nth dark ring due to one wavelength coincides with (n+3)th dark ring of another wavelength. If radius of curvature of the lens is 57 cm then find order and radius of nth dark ring?",
+        a: `**Part 1: Why Circular?**
+Because the locus of points of equal thickness in the air film between a spherical lens and a plane glass plate is a circle.
+
+**Part 2: Numerical**
+Given: λ1 = 4500Å, λ2 = 4000Å, R = 57cm.
+Condition: D_n (λ1) = D_{n+3} (λ2) => D_n²(λ1) = D_{n+3}²(λ2).
+
+**Step A: Find n**
+4nλ1 R = 4(n+3)λ2 R
+nλ1 = (n+3)λ2
+n(4500) = (n+3)(4000)
+45n = 40n + 120
+5n = 120  =>  **n = 24**.
+
+**Step B: Find Radius**
+r_n = √(n * λ1 * R)
+r_24 = √(24 * 4500 x 10^-8 cm * 57 cm)
+r_24 = √(0.06156) ≈ **0.248 cm**.`
+      },
+      {
+        id: "m1-q10", number: 10,
+        q: "In Newton's ring experiment the diameter of 5th and 10th dark ring are 3.5 mm and 6.4 mm respectively. Find the diameter of 15th dark ring. If a liquid is introduced between Plano-convex lens and glass plate then new diameter of 15th dark ring appears to be 5.45 mm. Calculate refractive index of liquid.",
+        a: `**Part 1: Find D15**
+Formula: D_n² = 4nλR.
+D10² - D5² = 4λR(10 - 5) = 20λR.
+(6.4)² - (3.5)² = 40.96 - 12.25 = 28.71 mm².
+So, 20λR = 28.71 => 4λR = 5.742.
+D15² = 4(15)λR = 15 * (4λR) = 15 * 5.742 = 86.13.
+**D15 = √86.13 ≈ 9.28 mm.**
+
+**Part 2: Liquid Refractive Index (μ)**
+D_liquid² = D_air² / μ
+μ = D_air² / D_liquid²
+μ = (9.28)² / (5.45)² = 86.13 / 29.70
+**μ ≈ 2.90**`
+      },
+      {
+        id: "m1-q11", number: 11,
+        q: "In a wedge shaped air film, 30 dark fringes are observed within 3.2 mm spacing. If wavelength of incident light is 5890 Å, find the wedge angle in degree, minutes and seconds",
+        a: `**Given:** Bandwidth β = Distance / Number of fringes = 3.2mm / 30.
+β = 0.1067 mm = 1.067 x 10^-4 m.
+λ = 5890 x 10^-10 m.
+
+**Formula:** β = λ / (2μθ) (Assume air film μ=1).
+θ = λ / (2β)
+θ = (5890 x 10^-10) / (2 * 1.067 x 10^-4)
+θ = 0.00276 radians.
+
+**Convert to Degrees:**
+θ(deg) = 0.00276 * (180/π) ≈ 0.158°.
+0.158° = 0 degrees
+0.158 * 60 = 9.48 minutes -> 9 minutes
+0.48 * 60 = 28.8 seconds -> 29 seconds
+**Answer: 0° 9' 29"**`
+      },
+      {
+        id: "m1-q12", number: 12,
+        q: "How many orders will be visible if the wavelength of incident radiation is 5000 Å and the number of lines on the grating is 2620 in one inch..?",
+        a: `**Given:** N = 2620 lines/inch.
+Grating element (a+b) = 2.54 cm / 2620 = 0.000969 cm = 9.69 x 10^-6 m.
+λ = 5000 x 10^-10 m = 5 x 10^-7 m.
+
+**Condition for max order:** sin θ = 1.
+n_max = (a+b) / λ
+n_max = (9.69 x 10^-6) / (5 x 10^-7)
+n_max = 19.38.
+**Integer orders visible = 19.**`
+      },
+      {
+        id: "m1-q13", number: 13,
+        q: "White light is incident on soap film at an angle sin⁻¹(4/5) and reflected light after examination by spectroscope showed dark bands. Two consecutive dark bands are observed at wavelengths 6100 Å and 6000 Å, if the refractive index of the film is 4/3, what will be the thickness of the film?",
+        a: `**Given:** i = sin⁻¹(0.8), μ=1.33 (4/3). Dark bands are consecutive (n and n+1).
+cos r = √(1 - sin²r) = √(1 - (sin i / μ)²).
+sin r = 0.8 / (4/3) = 0.6.
+cos r = √(1 - 0.36) = 0.8.
+
+**Condition:** 2μt cos r = nλ1 = (n+1)λ2.
+n(6100) = (n+1)(6000)
+61n = 60n + 60 => **n = 60**.
+
+**Thickness:**
+2(4/3)t(0.8) = 60 * 6000Å.
+2.133 t = 360000Å.
+t = 168750 Å ≈ **16.9 μm**.`
+      },
+      {
+        id: "m1-q14", number: 14,
+        q: "White light falls normally on a soap film of refractive index 1.5 and thickness 4500 Å. Which wavelengths within the visible spectrum (λ= 4000 A0 to 7000 A0) will be strongly reflected?",
+        a: `**Condition for Strong Reflection (Maxima):**
+2μt cos r = (2n - 1)λ / 2.
+For normal incidence, cos r = 1.
+4μt = (2n - 1)λ  =>  λ = 4μt / (2n - 1).
+
+**Given:** 4μt = 4 * 1.5 * 4500 = 27000 Å.
+
+**Possible λ:**
+n=1: λ = 27000/1 = 27000 (IR)
+n=2: λ = 27000/3 = 9000 (IR)
+n=3: λ = 27000/5 = **5400 Å** (Green - Visible)
+n=4: λ = 27000/7 = **3857 Å** (UV)
+
+**Result:** The wavelength **5400 Å** will be strongly reflected.`
+      },
+      {
+        id: "m1-q15", number: 15,
+        q: "A plane transmission grating having 5000 lines per cm is used to obtain a source of light with the third order. Calculate the angular separation between the spectral lines whose wavelengths are 500 and 515 nm.",
+        a: `**Given:** N=5000/cm => d = 1/5000 cm = 2 x 10^-4 cm = 2000 nm.
+Order n=3.
+λ1 = 500 nm, λ2 = 515 nm.
+
+**Formula:** sin θ = nλ / d.
+sin θ1 = 3 * 500 / 2000 = 0.75 => θ1 = 48.59°.
+sin θ2 = 3 * 515 / 2000 = 0.7725 => θ2 = 50.58°.
+
+**Separation:** Δθ = 50.58° - 48.59° = **1.99°**.`
+      },
+      {
+        id: "m1-q16", number: 16,
+        q: "A diffraction grating used at normal incidence gives a line 4500 Å in certain order superimposed on another line 4120 Å of next higher order. If the angle of diffraction is 45°, find the no. of lines per cm on the grating.",
+        a: `**Condition:** Coincidence means angle is same.
+n * 4500 = (n+1) * 4120
+4500n = 4120n + 4120
+380n = 4120 => n ≈ 10.8
+*Note: Assuming n=11 for 4120Å and n=10 (approx) for 4500Å.*
+
+Let's use the explicit angle provided (45°):
+(a+b) sin 45 = n(4500 Å)  OR  (a+b) sin 45 = (n+1)(4120 Å)
+Let's assume the question meant nλ1 = (n+1)λ2 is the condition for overlap, and we use one of them to find N.
+If n ≈ 11 (for 4120Å):
+(a+b) * 0.707 = 11 * 4120 x 10^-8 cm.
+(a+b) = 6.41 x 10^-4 cm.
+N = 1 / (a+b) = 1 / 6.41e-4 ≈ **1560 lines/cm**.`
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "Lasers & Fiber Optics",
+    icon: <Zap size={20} />,
+    description: "He-Ne, Nd:YAG, Numerical Aperture, Modes",
+    questions: [
+      {
+        id: "m2-q17", number: 17,
+        q: "Explain stimulated emission and hence explain working of laser with help of its components.",
+        a: `**Stimulated Emission:** A process where an incoming photon of energy hv interacts with an excited electron, causing it to drop to a lower state and emit a second photon of identical energy, phase, and direction. This is the key to amplification.
+
+**Components of Laser:**
+1.  **Active Medium:** Material with metastable states (e.g., He-Ne gas, Ruby rod).
+2.  **Pumping Source:** Energy source to achieve population inversion (e.g., Flash lamp, electrical discharge).
+3.  **Optical Resonator:** Pair of mirrors (one 100% reflective, one partial) to feedback photons and build intensity.`,
+        diagram: "laser_components"
+      },
+      {
+        id: "m2-q18", number: 18,
+        q: "Differentiate between spontaneous emission and stimulated emission.",
+        a: `| Feature | Spontaneous Emission | Stimulated Emission |
+| :--- | :--- | :--- |
+| **Cause** | Natural decay | Triggered by photon |
+| **Output** | 1 Photon | 2 Coherent Photons |
+| **Direction** | Random | Direction of incident photon |
+| **Phase** | Random phase | Constant phase relationship |
+| **Example** | LED, Bulb | Laser |`
+      },
+      {
+        id: "m2-q19", number: 19,
+        q: "Write short note on Holography.",
+        a: `**Holography** is a method of recording and reconstructing the complete 3D wavefront of an object.
+* **Principle:** Based on Interference. It records both amplitude (intensity) and phase (depth) information.
+* **Process:** A laser beam is split. The **Reference beam** goes directly to the plate. The **Object beam** reflects off the object to the plate. Their interference pattern is recorded (Hologram).
+* **Reconstruction:** Illuminating the hologram with the reference beam recreates the virtual 3D image.`
+      },
+      {
+        id: "m2-q20", number: 20,
+        q: "Define acceptance angle, fractional index change of an optical Fiber. Derive an expression for Numerical Aperture of Step Index Fiber. Discuss the significance of numerical aperture.",
+        a: `**Acceptance Angle:** The maximum angle of incidence at the core input face for which the ray undergoes total internal reflection inside the core.
+**Fractional Index Change (Δ):** Δ = (n1 - n2) / n1.
+
+**NA Derivation:**
+1.  Let n0 = air, n1 = core, n2 = cladding.
+2.  Snell's law at entrance: n0 sin i = n1 sin r.
+3.  In triangle, angle at interface φ = 90 - r.
+4.  For TIR: sin φ ≥ n2/n1.
+5.  Limiting case: sin(90-r) = cos r = n2/n1.
+6.  sin r = √(1 - cos²r) = √(1 - (n2/n1)²).
+7.  NA = n0 sin i_max = n1 * sin r = n1 * [√(n1² - n2²) / n1].
+8.  **NA = √(n1² - n2²)**.
+
+**Significance:** NA determines the light gathering ability of the fiber. High NA means easier coupling but higher dispersion.`,
+        diagram: "fiber_na"
+      },
+      {
+        id: "m2-q21", number: 21,
+        q: "Explain phenomenon of Spontaneous, stimulated emission and Population inversion. With the help of neat labelled diagrams explain the construction and working of He-Ne Laser.",
+        a: `**Population Inversion:** A state where more atoms are in higher energy state (E2) than lower state (E1). Essential for lasing.
+
+**He-Ne Laser:**
+* **Type:** 4-level Gas Laser.
+* **Construction:** Quartz tube filled with He and Ne (10:1 ratio). Mirrors at ends.
+* **Working:**
+    1.  Electrical discharge excites He atoms to metastable states F2/F3.
+    2.  He atoms collide with Ne atoms, transferring energy (Resonant Transfer) and exciting Ne to E4/E6.
+    3.  **Lasing Transition:** Ne drops from E6 to E3 (632.8nm Red light).
+    4.  Ne drops further to ground state via spontaneous emission and wall collisions.`,
+        diagram: "hene_laser"
+      },
+      {
+        id: "m2-q22", number: 22,
+        q: "Explain phenomenon of stimulated emission, metastable state, Optical Pumping. With the help of neat labelled diagrams explain the construction and working of Nd:YAG Laser.",
+        a: `**Metastable State:** An excited state with a long lifetime (10^-3 s vs 10^-8 s), allowing atoms to accumulate for population inversion.
+**Optical Pumping:** Using light (flash lamp) to excite atoms.
+
+**Nd:YAG Laser:**
+* **Medium:** Yttrium Aluminum Garnet doped with Neodymium (Nd³⁺).
+* **Pumping:** Krypton arc lamp.
+* **Working:**
+    1.  Pump light excites Nd ions to absorption bands.
+    2.  Fast decay to metastable level.
+    3.  **Lasing:** Transition from metastable to lower level emits **1.06 μm (IR)**.
+    4.  Used in surgery, welding.`
+      },
+      {
+        id: "m2-q23", number: 23,
+        q: "Differentiate Step Index Fiber and Graded Index Fiber. Draw Profile index Diagram for Step Index Fiber and Graded Index Fiber.",
+        a: `| Feature | Step Index (SI) | Graded Index (GRIN) |
+| :--- | :--- | :--- |
+| **RI Profile** | Constant in core, abrupt change at cladding | Decreases parabolic from center to cladding |
+| **Path** | Zig-zag | Sinusoidal (Helical) |
+| **Dispersion** | High (Intermodal dispersion) | Low (Refocusing effect) |
+| **Bandwidth** | Lower | Higher |`
+      },
+      {
+        id: "m2-q24", number: 24,
+        q: "With help of block diagram, explain optical fiber communication system. What are the advantages and disadvantages of optical fiber communication system over wired and wireless communication?",
+        a: `**Block Diagram:**
+Source (Info) -> Transmitter (LED/Laser + Drive Circuit) -> Optical Fiber (Channel) -> Receiver (Photodetector + Amplifier) -> Destination.
+
+**Advantages:**
+* Huge Bandwidth (Tbps).
+* Immunity to Electromagnetic Interference (EMI).
+* Low attenuation (signal loss).
+* Secure (hard to tap).
+
+**Disadvantages:**
+* High initial cost.
+* Fragile components.
+* Complex splicing/joining.`
+      },
+      {
+        id: "m2-q25", number: 25,
+        q: "What do you mean by modes in optical fiber? Explain different type of modes travelling through fiber in short.",
+        a: `**Modes:** Distinct paths that light rays can take through the fiber while maintaining constructive phase. They represent solutions to Maxwell's equations.
+
+**Types:**
+1.  **Single Mode:** Core is very small (~9μm). Only axial ray travels. No intermodal dispersion.
+2.  **Multi Mode:** Larger core (~50μm). Many zigzag paths allowed. Higher dispersion.`
+      },
+      {
+        id: "m2-q26", number: 26,
+        q: "A light ray enters an optical fiber of core refractive index 1.49 and cladding refractive index 1.44. Find the following:",
+        a: `**Problem Statement:** This is the prompt for the following sub-questions (27-29).
+        
+Given Data:
+n1 (Core) = 1.49
+n2 (Cladding) = 1.44`
+      },
+      {
+        id: "m2-q27", number: 27,
+        q: "Critical Angle at core-cladding interface",
+        a: `**Formula:** sin θc = n2 / n1
+**Calculation:**
+sin θc = 1.44 / 1.49 = 0.9664
+θc = sin⁻¹(0.9664)
+**θc ≈ 75.1°**`
+      },
+      {
+        id: "m2-q28", number: 28,
+        q: "Numerical Aperture",
+        a: `**Formula:** NA = √(n1² - n2²)
+**Calculation:**
+NA = √((1.49)² - (1.44)²)
+NA = √(2.2201 - 2.0736)
+NA = √0.1465
+**NA ≈ 0.383**`
+      },
+      {
+        id: "m2-q29", number: 29,
+        q: "V Number and Number of modes travelling through fiber of core radius 90 μm and 750 nm is wavelength of light.",
+        a: `**Given:**
+Radius a = 90 μm = 90 x 10^-6 m
+λ = 750 nm = 750 x 10^-9 m
+NA = 0.383 (from Q28)
+
+**V Number Formula:** V = (2πa / λ) * NA
+V = (2π * 90e-6 / 750e-9) * 0.383
+V = (753.98) * 0.383
+**V ≈ 288.7**
+
+**Number of Modes Formula (Step Index):** N = V² / 2
+N = (288.7)² / 2 = 83347 / 2
+**N ≈ 41,673 modes**`
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Quantum Mechanics",
+    icon: <Atom size={20} />,
+    description: "Schrodinger, Heisenberg, Particle in a Box",
+    questions: [
+      {
+        id: "m3-q1", number: 1,
+        q: "Show that de Broglie group velocity associated with the wave packet is equal to the particle velocity.",
+        a: `**Derivation:**
+1.  Group velocity v_g = dω / dk.
+2.  Energy E = ħω => ω = E/ħ.
+3.  Momentum p = ħk => k = p/ħ.
+4.  v_g = d(E/ħ) / d(p/ħ) = dE / dp.
+5.  For a particle, E = p² / 2m.
+6.  dE/dp = d/dp (p²/2m) = 2p / 2m = p / m.
+7.  Since p = mv, v_g = mv / m = v.
+**Therefore, Group Velocity = Particle Velocity.**`
+      },
+      {
+        id: "m3-q2", number: 2,
+        q: "What do you mean by matter wave? Explain Properties of matter waves.",
+        a: `**Matter Wave:** The wave associated with a moving particle (de Broglie wave). λ = h / mv.
+
+**Properties:**
+1.  Lighter the particle, greater the wavelength.
+2.  Faster the particle, smaller the wavelength.
+3.  Not electromagnetic in nature.
+4.  Only associated with moving particles.
+5.  Independent of charge.`
+      },
+      {
+        id: "m3-q3", number: 3,
+        q: "Using Heisenberg's Uncertainty Principle, show that electron cannot exist within the nucleus.",
+        a: `1.  Nucleus radius Δx ≈ 10^-14 m.
+2.  Uncertainty Principle: Δx * Δp ≥ h / 4π.
+3.  Min momentum Δp ≥ h / (4π * 10^-14) ≈ 5.27 x 10^-21 kg m/s.
+4.  Energy E = pc (relativistic).
+5.  E = (5.27e-21) * (3e8) Joules ≈ 1.6e-12 J.
+6.  In MeV: E ≈ 10 MeV.
+7.  Experimental beta decay energies are ~1-2 MeV (much less than required 10 MeV). Or simply, the confinement energy is too high for binding.
+**Thus, electrons cannot exist freely inside the nucleus.**`
+      },
+      {
+        id: "m3-q4", number: 4,
+        q: "Derive one dimensional Time Dependent Schrodinger equation for matter waves.",
+        a: `Start with wave function: Ψ(x,t) = A e^{-i(Et - px)/ħ}
+1.  Differentiate w.r.t t:
+    ∂Ψ/∂t = -i(E/ħ) Ψ  =>  EΨ = iħ (∂Ψ/∂t).
+2.  Differentiate w.r.t x twice:
+    ∂²Ψ/∂x² = (ip/ħ)² Ψ = -(p²/ħ²) Ψ.
+    p²Ψ = -ħ² (∂²Ψ/∂x²).
+3.  Total Energy equation: E = p²/2m + V.
+4.  Multiply by Ψ: EΨ = (p²/2m)Ψ + VΨ.
+5.  Substitute operators:
+    **iħ ∂Ψ/∂t = [-ħ²/(2m) ∂²/∂x² + V] Ψ**.`
+      },
+      {
+        id: "m3-q5", number: 5,
+        q: "Derive one dimensional Schrodinger's Time Independent wave equation.",
+        a: `1.  Start with Time Dependent Eq: iħ ∂Ψ/∂t = HΨ.
+2.  Use Separation of Variables: Ψ(x,t) = ψ(x)φ(t).
+3.  Result leads to spatial part satisfying Eψ(x) = Hψ(x).
+4.  Substitute Hamiltonian H = -ħ²/2m (d²/dx²) + V.
+5.  Eψ = -ħ²/2m (d²ψ/dx²) + Vψ.
+6.  Rearranging: d²ψ/dx² + (2m/ħ²)(E - V)ψ = 0.
+This is the **Time Independent Schrodinger Equation (TISE)**.`
+      },
+      {
+        id: "m3-q6", number: 6,
+        q: "Show that the energy of an electron in the box varies as the square of natural number.",
+        a: `For a particle in a 1D box of width L:
+1.  Solution to TISE is ψ(x) = A sin(kx) + B cos(kx).
+2.  Boundary conditions (ψ=0 at x=0, x=L) implies k = nπ/L.
+3.  Energy E = (ħ²k²) / 2m.
+4.  Substitute k: E_n = (ħ² * n²π²) / (2m * L²).
+5.  Simplifying (ħ = h/2π): **E_n = (n²h²) / (8mL²)**.
+6.  Since h, m, L are constants, **E_n ∝ n²**.`
+      },
+      {
+        id: "m3-q7", number: 7,
+        q: "Derive the expression for energy Eigen values for a free particle in one dimensional potential well.",
+        a: `(Same derivation as Q6)
+1.  Potential V=0 inside, V=∞ outside.
+2.  Eq: d²ψ/dx² + (2mE/ħ²)ψ = 0. Let k² = 2mE/ħ².
+3.  General sol: ψ = A sin kx + B cos kx.
+4.  x=0, ψ=0 => B=0.
+5.  x=L, ψ=0 => A sin kL = 0 => kL = nπ.
+6.  k = nπ/L.
+7.  k² = 2mE/ħ² => E = (k²ħ²)/2m = (n²π²/L²) * (h²/4π²2m).
+8.  **E_n = n²h² / 8mL²**.`
+      },
+      {
+        id: "m3-q8", number: 8,
+        q: "Show that energy levels of a particle in one dimensional infinite potential well are quantized.",
+        a: `1.  The wave function must vanish at boundaries (x=0, x=L).
+2.  This imposes the condition sin(kL) = 0.
+3.  Therefore, kL must be an integer multiple of π: kL = nπ (where n = 1, 2, 3...).
+4.  Since Energy E = ħ²k²/2m, the allowable Energies are restricted to specific discrete values corresponding to integer n.
+5.  **E_n = (n²h²) / (8mL²)**.
+6.  Since n is an integer, energy cannot vary continuously; it is quantized.`
+      },
+      {
+        id: "m3-q9", number: 9,
+        q: "State and Explain de Broglie Hypothesis. An electron beam is accelerated from rest through a potential difference of 200 V. Calculate the associated wavelength.",
+        a: `**Hypothesis:** Every moving particle has a wave associated with it. λ = h/p.
+
+**Numerical:**
+V = 200 Volts.
+Formula: λ = 12.27 / √V Å (for electrons).
+λ = 12.27 / √200 = 12.27 / 14.14
+**λ ≈ 0.867 Å**.`
+      },
+      {
+        id: "m3-q10", number: 10,
+        q: "Calculate de Broglie wavelength associated with an α-particle accelerated by a potential difference of 100 kV. Mass of a particle is 6.68×10⁻²⁷ kg.",
+        a: `**Given:** V = 100,000 V. Mass m = 6.68 x 10^-27 kg. Charge q (alpha) = 2e = 3.2 x 10^-19 C.
+
+**Formula:** λ = h / √(2mqV).
+λ = 6.63e-34 / √(2 * 6.68e-27 * 3.2e-19 * 10^5)
+Denominator = √(42.75e-41) ≈ 6.5e-20.
+λ ≈ 1e-14 m = **0.0001 Å**.`
+      },
+      {
+        id: "m3-q11", number: 11,
+        q: "An electron is trapped in a one dimensional box of length 0.1 nm. Calculate the energy required to excite the electron from its ground state to the second excited state.",
+        a: `**Given:** L = 0.1 nm = 10^-10 m.
+Ground state: n=1.
+Second excited state: n=3 (n=2 is first excited).
+
+**Energy Formula:** E_n = n²h² / 8mL².
+E1 = (1)² * E_unit.
+E3 = (3)² * E_unit = 9 * E1.
+Difference ΔE = E3 - E1 = 8 * E1.
+
+**Calculate E1:**
+E1 = (6.63e-34)² / (8 * 9.1e-31 * (10^-10)²)
+E1 ≈ 6.03 x 10^-18 J ≈ 37.6 eV.
+
+**Required Energy:**
+ΔE = 8 * 37.6 eV = **301 eV**.`
+      },
+      {
+        id: "m3-q12", number: 12,
+        q: "A position and momentum of 1 KeV electron are simultaneously measured. If position is located within 10 nm then what is the percentage uncertainty in its momentum?",
+        a: `**Given:** E = 1 KeV = 1000 eV. Δx = 10 nm = 10^-8 m.
+**1. Find actual momentum p:**
+E = p²/2m => p = √(2mE).
+p = √(2 * 9.1e-31 * 1000 * 1.6e-19) = √(2.91e-46) = 1.7e-23 kg m/s.
+
+**2. Find Uncertainty Δp:**
+Δx Δp ≥ ħ/2 (or h/4π).
+Δp ≥ 6.63e-34 / (4π * 10^-8) = 0.527e-26 kg m/s.
+
+**3. Percentage Uncertainty:**
+(Δp / p) * 100 = (0.527e-26 / 1.7e-23) * 100
+= 0.31 x 10^-3 * 100 = **0.031%**.`
+      },
+      {
+        id: "m3-q13", number: 13,
+        q: "The speed of an electron is measured to within an uncertainty of 2 x 10⁴ m/s. What is the minimum space required by the electron to be confined to an atom?",
+        a: `**Given:** Δv = 2x10^4 m/s.
+Δp = m Δv = 9.1e-31 * 2e4 = 1.82e-26 kg m/s.
+
+**Uncertainty Principle:** Δx ≥ h / (4π Δp).
+Δx ≥ 6.63e-34 / (4π * 1.82e-26).
+Δx ≥ 6.63e-34 / 22.8e-26
+Δx ≥ 0.29e-8 m = **2.9 nm**.
+Minimum space is approx 29 Å.`
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: "Semiconductors",
+    icon: <Cpu size={20} />,
+    description: "Fermi Levels, LED, Solar Cell",
+    questions: [
+      {
+        id: "m4-q1", number: 1,
+        q: "Derive microscopic form of Ohm's law. Deduce conductivity for an intrinsic semiconductor.",
+        a: `**Ohm's Law:**
+1.  Current I = nAvq (n: charge density, A: area, v: drift velocity, q: charge).
+2.  Current Density J = I/A = nqv.
+3.  Mobility μ = v/E => v = μE.
+4.  Substitute v: J = nqμE.
+5.  Compare with J = σE (Ohm's law microscopic).
+6.  **σ = nqμ**.
+
+**Intrinsic Conductivity:**
+Contains both electrons (n) and holes (p). n=p=ni.
+Total Current J = J_e + J_h = (n e μ_e + p e μ_h) E.
+Conductivity **σ = n_i e (μ_e + μ_h)**.`
+      },
+      {
+        id: "m4-q2", number: 2,
+        q: "What do you mean by Fermi energy? Explain it with Fermi Dirac distribution function.",
+        a: `**Fermi Energy (Ef):** The highest energy level occupied by an electron at Absolute Zero (0K). It represents the chemical potential of the electrons.
+
+**Fermi-Dirac Function:**
+f(E) = 1 / [1 + exp((E - Ef) / kT)]
+* At T=0K: If E < Ef, f(E) = 1 (Occupied). If E > Ef, f(E) = 0 (Empty).
+* At T>0K: Probability at Ef is exactly 0.5.`
+      },
+      {
+        id: "m4-q3", number: 3,
+        q: "Show that Fermi energy lie at the midway of band gap in intrinsic semiconductor.",
+        a: `1.  n = Nc exp(-(Ec-Ef)/kT)
+2.  p = Nv exp(-(Ef-Ev)/kT)
+3.  Intrinsic: n = p. Assuming Nc ≈ Nv (effective masses equal).
+4.  exp(-(Ec-Ef)/kT) = exp(-(Ef-Ev)/kT).
+5.  -(Ec-Ef) = -(Ef-Ev).
+6.  Ec - Ef = Ef - Ev.
+7.  2Ef = Ec + Ev.
+8.  **Ef = (Ec + Ev) / 2**.
+Thus, Ef is in the middle of the band gap.`
+      },
+      {
+        id: "m4-q4", number: 4,
+        q: "What is effect of Temperature and doping concentration on Fermi Energy in N type semiconductor? Explain with necessary diagram.",
+        a: `**N-Type:**
+* **Doping:** Adding donors adds energy levels just below Conduction Band. **Ef moves UP** towards Ec.
+* **Temperature:** As T increases, more intrinsic carriers are generated. The semiconductor behaves more like intrinsic. **Ef moves DOWN** towards the center of the gap (intrinsic level).`
+      },
+      {
+        id: "m4-q5", number: 5,
+        q: "What is effect of Temperature and doping concentration on Fermi Energy in P type semiconductor? Explain with necessary diagram.",
+        a: `**P-Type:**
+* **Doping:** Adding acceptors adds levels just above Valence Band. **Ef moves DOWN** towards Ev.
+* **Temperature:** As T increases, Ef moves **UP** towards the center of the gap.`
+      },
+      {
+        id: "m4-q6", number: 6,
+        q: "Write a short note on LED with suitable diagrams.",
+        a: `**LED (Light Emitting Diode):**
+* **Principle:** Electroluminescence. Forward biased p-n junction. Recombination of electrons and holes releases energy as photons.
+* **Material:** Direct Band Gap semiconductors (e.g., GaAs, GaP). Si/Ge are indirect (heat, not light).
+* **Color:** Depends on Band Gap (Eg). λ = hc / Eg.
+* **Working:** Carriers injected across junction recombine, emitting light.`
+      },
+      {
+        id: "m4-q7", number: 7,
+        q: "Write short note on photovoltaic cell with suitable diagrams.",
+        a: `**Solar Cell:**
+* **Principle:** Photovoltaic Effect. Converts light to electricity.
+* **Working:** Light strikes depletion region -> creates Electron-Hole pairs. Built-in electric field sweeps electrons to N-side and holes to P-side, creating Voltage.
+* Operates in Fourth Quadrant of I-V curve (Power delivery).`,
+        diagram: "solar_cell"
+      },
+      {
+        id: "m4-q8", number: 8,
+        q: "The resistivity of Cu is 1.72×10⁻⁸ Ohm-m. Calculate the mobility of electrons in Cu. Given number of electrons per unit volume is 10.41 x 10²⁸/m³",
+        a: `**Formula:** σ = 1/ρ = neμ  =>  μ = 1 / (ρne).
+**Given:** ρ = 1.72e-8, n = 10.41e28, e = 1.6e-19.
+μ = 1 / (1.72e-8 * 10.41e28 * 1.6e-19)
+μ = 1 / (28.6)
+**μ ≈ 0.035 m²/Vs**.`
+      },
+      {
+        id: "m4-q9", number: 9,
+        q: "Find resistivity of intrinsic germanium at 330 K Given density of carriers is 2.5×10¹⁹/m³. Mobility of electrons is 0.39 m²/V sec. and for holes 0.19 m²/V sec.",
+        a: `**Formula:** σ = ni * e * (μe + μh).
+σ = 2.5e19 * 1.6e-19 * (0.39 + 0.19)
+σ = 4 * 0.58 = 2.32 S/m.
+**Resistivity ρ = 1/σ = 1/2.32 ≈ 0.431 Ωm**.`
+      },
+      {
+        id: "m4-q10", number: 10,
+        q: "Find out probability of electron not occupying in Energy level E in conduction band at 273 K for pure Si of Band gap 0.74 eV.",
+        a: `Assuming E is at bottom of conduction band Ec.
+Ef is at midgap. E - Ef = Eg/2 = 0.37 eV.
+kT = 0.0235 eV (at 273K).
+Prob of occupation f(E) = 1 / [1 + exp(0.37 / 0.0235)] = 1 / [1 + exp(15.7)] ≈ 0.
+Prob of **NOT** occupying = 1 - f(E) ≈ **1 (or 100%)**.
+(At standard temps, conduction band is mostly empty).`
+      },
+      {
+        id: "m4-q11", number: 11,
+        q: "Find out probability of electron occupying energy level E lying above Fermi energy by 0.25 eV energy at 300K.",
+        a: `**Given:**
+E - Ef = 0.25 eV
+T = 300K => kT ≈ 0.026 eV
+
+**Formula:** f(E) = 1 / [1 + exp((E-Ef)/kT)]
+f(E) = 1 / [1 + exp(0.25 / 0.026)]
+f(E) = 1 / [1 + exp(9.61)]
+f(E) = 1 / [1 + 14988]
+f(E) ≈ 1 / 14989
+**Probability ≈ 6.67 x 10⁻⁵**`
+      },
+      {
+        id: "m4-q12", number: 12,
+        q: "Find out probability of electron occupying energy level E lying below Fermi energy by 0.13 eV energy at 300K.",
+        a: `**Given:**
+E - Ef = -0.13 eV (Since it is below Fermi level)
+kT ≈ 0.026 eV
+
+**Formula:** f(E) = 1 / [1 + exp((E-Ef)/kT)]
+f(E) = 1 / [1 + exp(-0.13 / 0.026)]
+f(E) = 1 / [1 + exp(-5)]
+f(E) = 1 / [1 + 0.00673]
+f(E) = 1 / 1.00673
+**Probability ≈ 0.993 (or 99.3%)**`
+      }
+    ]
+  },
+  {
+    id: 5,
+    title: "Nanotechnology",
+    icon: <Activity size={20} />,
+    description: "Nano properties, AFM, SEM",
+    questions: [
+      {
+        id: "m5-q1", number: 1,
+        q: "What do you mean by nanomaterials? How nanoparticles are differ from their bulk form in terms of properties?",
+        a: `**Nanomaterials:** Materials with at least one dimension in the range 1-100 nm.
+**Differences:**
+1.  **Surface Area:** Huge Surface-to-Volume ratio makes them highly reactive.
+2.  **Quantum Effects:** Discretization of energy levels (Quantum Confinement) changes optical/electrical properties.`
+      },
+      {
+        id: "m5-q2", number: 2,
+        q: "Explain following properties of nanoparticles in details: SVR, Blue-shift, Superparamagnetism, Quantum confinement.",
+        a: `1.  **SVR (Surface to Volume Ratio):** Increases drastically as size decreases. Increases catalytic activity.
+2.  **Quantum Confinement:** When size < Exciton Bohr Radius, energy bands split into discrete levels. Band gap increases.
+3.  **Blue Shift:** Due to increased band gap, emitted light shifts to shorter wavelengths (Blue) as particle size shrinks.
+4.  **Superparamagnetism:** Ferromagnetic nanoparticles behave like paramagnets with huge magnetic moments below Curie temp, with zero coercivity.`
+      },
+      {
+        id: "m5-q3", number: 3,
+        q: "Explain Top Down and Bottom up approaches for the synthesis of Nanomaterials with examples.",
+        a: `**Top Down:** Breaking bulk material into nano.
+* *Examples:* Ball Milling, Lithography.
+* *Pros:* Good for industrial scale. *Cons:* Surface defects.
+
+**Bottom Up:** Assembling atoms/molecules into nano.
+* *Examples:* Sol-gel, CVD, Self-assembly.
+* *Pros:* Fewer defects. *Cons:* Hard to scale.`
+      },
+      {
+        id: "m5-q4", number: 4,
+        q: "What do you mean by bottom up and top down approach to synthesize nanomaterials? Write short note on ball milling method.",
+        a: `**Ball Milling (Top Down Method):**
+* **Principle:** Mechanical crushing.
+* **Process:** Balls (steel/ceramic) and material are placed in a rotating canister. The high-energy impact and shearing forces between the balls and the walls reduce the particle size to nanoscale.
+* **Advantages:** Simple, cheap, scalable.
+* **Disadvantages:** Contamination from balls, irregular shapes.`
+      },
+      {
+        id: "m5-q5", number: 5,
+        q: "Explain Principle and working of Atomic Force Microscope (AFM) with suitable diagram.",
+        a: `**Atomic Force Microscope (AFM):**
+* **Principle:** Measures Van der Waals forces between a sharp tip and sample surface.
+* **Working:**
+    1.  A cantilever with a sharp tip scans the surface.
+    2.  Forces deflect the cantilever.
+    3.  A laser reflects off the cantilever to a photodiode detector.
+    4.  Feedback loop maintains constant force/height to map topography.`,
+        diagram: "afm_setup"
+      },
+      {
+        id: "m5-q6", number: 6,
+        q: "Explain Principle and working of Scanning Electron Microscope (SEM) with suitable diagram.",
+        a: `**Scanning Electron Microscope (SEM):**
+* **Principle:** Scans surface with focused electron beam. Detects secondary electrons.
+* **Working:**
+    1.  Electron Gun generates beam.
+    2.  Magnetic Lenses focus beam.
+    3.  Scanning coils raster the beam across sample.
+    4.  Detectors catch Secondary Electrons (SE) for topography and Backscattered Electrons (BSE) for composition.`,
+        diagram: "sem_setup"
+      },
+      {
+        id: "m5-q7", number: 7,
+        q: "What are the applications of nanomaterials?",
+        a: `1.  **Medicine:** Drug delivery, cancer treatment (hyperthermia).
+2.  **Electronics:** Single electron transistors, faster CPUs.
+3.  **Energy:** Efficient solar cells, better batteries.
+4.  **Environment:** Water purification filters.
+5.  **Materials:** Stronger, lighter composites (Carbon Nanotubes).`
+      }
+    ]
+  },
+  {
+    id: 6,
+    title: "Sensors",
+    icon: <Ruler size={20} />,
+    description: "Hall Effect, Transducers",
+    questions: [
+      {
+        id: "m6-q1", number: 1,
+        q: "How transducers differ from sensors? Explain concept of sensitivity, selectivity, accuracy and precision.",
+        a: `* **Sensor:** Detects change in physical environment (e.g., Thermistor).
+* **Transducer:** Converts one form of energy to another (e.g., Mic converts sound to electrical).
+
+**Metrics:**
+* **Sensitivity:** Change in output per unit change in input.
+* **Selectivity:** Ability to respond only to desired signal.
+* **Accuracy:** Closeness to true value.
+* **Precision:** Reproducibility of reading.`
+      },
+      {
+        id: "m6-q2", number: 2,
+        q: "Define Hall Effect. Derive an expression of Hall Voltage. Explain physical significance of Hall coefficient.",
+        a: `**Hall Effect:** When a current-carrying conductor is placed in a perpendicular magnetic field, a transverse voltage (Hall Voltage) is generated.
+
+**Derivation:**
+1.  Lorentz Force Fm = q(v x B).
+2.  Electrostatic Force Fe = qEh.
+3.  Equilibrium: Fm = Fe => qvB = qEh => Eh = vB.
+4.  Hall Voltage Vh = Eh * d (width) = vBd.
+5.  Current density J = nqv => v = J/nq.
+6.  Substitute v: **Vh = (J B d) / (n q)**.
+7.  Hall Coefficient Rh = 1/nq.
+8.  **Vh = Rh B I / t** (where t is thickness, I is current).
+
+**Significance:**
+* Determine N-type or P-type.
+* Measure carrier concentration.`,
+        diagram: "hall_effect"
+      },
+      {
+        id: "m6-q3", number: 3,
+        q: "Why photodiode is used in reversed bias for light sensing? Explain construction and working of Photodiode with I-V characteristics.",
+        a: `**Why Reverse Bias:** In reverse bias, the depletion layer width increases. The dark current is negligible. When light falls, minority carriers are generated, causing a sharp increase in current proportional to intensity. In forward bias, the huge normal current masks this small change.
+
+**Construction:** P-N junction with a transparent window.
+**Working:**
+1.  Photon strikes depletion region.
+2.  Creates Electron-Hole pair.
+3.  Reverse electric field sweeps carriers out, creating photocurrent.`
+      },
+      {
+        id: "m6-q4", number: 4,
+        q: "A sample of n type silicon has donar density of 10²¹/m³. It is used in Hall effect experiment. If the sample of width 0.64 mm is kept in a magnetic field of 5500 Gauss with current density 400 A/m². Calculate Hall potential, Hall Coefficient and Hall Angle (Given: Mobility is 0.17 m²/Vsec.)",
+        a: `**Given:** n = 10^21 m^-3. w = 0.64mm = 6.4e-4m. B = 5500 G = 0.55 T. J = 400. μ = 0.17.
+**1. Hall Coefficient Rh:**
+Rh = 1 / (ne) = 1 / (10^21 * 1.6e-19) = 1 / 160 = **0.00625 m³/C**.
+
+**2. Hall Voltage (Potential):**
+Eh = Rh * J * B.
+Eh = 0.00625 * 400 * 0.55 = 1.375 V/m.
+Vh = Eh * w = 1.375 * 6.4e-4 = **8.8 x 10^-4 V** (0.88 mV).
+
+**3. Hall Angle (θ):**
+tan θ = μB = 0.17 * 0.55 = 0.0935.
+θ = tan⁻¹(0.0935) ≈ **5.34°**.`
+      }
+    ]
+  }
+];
+
+// --- Chat Bot Component ---
+
+const ChatBot = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { role: 'assistant', content: "Hi! I'm PhysBot. I have studied Sandip Dhoble Sir's Question Bank. Ask me anything about Physics!" }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Construct System Prompt from Module Data
+  const generateSystemPrompt = () => {
+    let prompt = "You are PhysBot, an AI assistant for Engineering Physics students preparing for End Sem exams. You have access to the following Question Bank database. Answer student questions based STRICTLY on this context if possible. If the answer involves a derivation or long explanation, summarize the key steps clearly. \n\nDATABASE:\n";
+    
+    modules.forEach(m => {
+      prompt += `--- Module ${m.id}: ${m.title} ---\n`;
+      m.questions.forEach(q => {
+        prompt += `Q${q.number}: ${q.q}\nAnswer: ${q.a}\n\n`;
+      });
+    });
+
+    return prompt;
+  };
+
+  const handleSend = async () => {
+    if (!input.trim()) return;
+
+    const userMessage = { role: 'user', content: input };
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const systemPrompt = generateSystemPrompt();
+      
+      const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer blAJT7bc5KHXR5UG3MbHl5OoyNF9Z9Jv`
+        },
+        body: JSON.stringify({
+          model: 'mistral-tiny',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...messages.filter(m => m.role !== 'system').slice(-6), // Keep last few context messages
+            userMessage
+          ],
+          temperature: 0.7,
+          max_tokens: 500
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.choices && data.choices[0]) {
+        const botMessage = { role: 'assistant', content: data.choices[0].message.content };
+        setMessages(prev => [...prev, botMessage]);
+      } else {
+        throw new Error('No response from AI');
+      }
+    } catch (error) {
+      console.error('Chat Error:', error);
+      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I'm having trouble connecting to the server right now. Please try again later." }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {/* Floating Button */}
+      {!isOpen && (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-2xl z-50 transition-all hover:scale-110 flex items-center justify-center"
+        >
+          <MessageCircle size={28} />
+        </button>
+      )}
+
+      {/* Chat Interface */}
+      {isOpen && (
+        <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-300">
+          {/* Header */}
+          <div className="bg-slate-900 p-4 flex justify-between items-center text-white">
+            <div className="flex items-center gap-2">
+              <div className="bg-blue-500 p-1 rounded-full">
+                <Bot size={20} />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm">PhysBot AI</h3>
+                <p className="text-xs text-slate-400">Powered by Mistral</p>
+              </div>
+            </div>
+            <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white">
+              <Minimize2 size={18} />
+            </button>
+          </div>
+
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto p-4 bg-slate-50 space-y-4">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div 
+                  className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+                    msg.role === 'user' 
+                      ? 'bg-blue-600 text-white rounded-br-none' 
+                      : 'bg-white border border-slate-200 text-slate-700 rounded-bl-none shadow-sm'
+                  }`}
+                >
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+            {isLoading && (
+               <div className="flex justify-start">
+                <div className="bg-white border border-slate-200 p-3 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-2">
+                  <Loader2 size={16} className="animate-spin text-blue-500" />
+                  <span className="text-xs text-slate-500">Thinking...</span>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Area */}
+          <div className="p-3 bg-white border-t border-slate-100 flex gap-2">
+            <input 
+              type="text" 
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Ask a doubt..."
+              className="flex-1 bg-slate-100 border-none rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+            <button 
+              onClick={handleSend}
+              disabled={isLoading || !input.trim()}
+              className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <Send size={18} />
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+const App = () => {
+  const [activeModuleId, setActiveModuleId] = useState(1);
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+
+  const activeModule = modules.find(m => m.id === activeModuleId);
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
+      
+      {/* Top Banner Branding */}
+      <div className="bg-slate-900 text-slate-300 text-center py-2 text-xs uppercase tracking-widest">
+         Sandip Dhoble Sir Question Bank | End Sem EP
+      </div>
+
+      <div className="flex-1 flex overflow-hidden">
+        {/* Sidebar */}
+        <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0`}>
+          <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+            <div>
+              <h1 className="font-bold text-xl text-slate-800 flex items-center gap-2">
+                <BookOpen className="text-blue-600" />
+                PhysMaster
+              </h1>
+              <p className="text-xs text-slate-500 mt-1">Made by Anish Vyapari</p>
+            </div>
+            <button onClick={() => setSidebarOpen(false)} className="md:hidden text-slate-400 hover:text-slate-600">
+              <X size={24} />
+            </button>
+          </div>
+          
+          <nav className="p-4 space-y-2 overflow-y-auto h-[calc(100vh-140px)]">
+            {modules.map((mod) => (
+              <button
+                key={mod.id}
+                onClick={() => { setActiveModuleId(mod.id); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-4 p-4 rounded-xl transition-all text-left group ${activeModuleId === mod.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'hover:bg-slate-100 text-slate-600'}`}
+              >
+                <div className={`p-2 rounded-lg ${activeModuleId === mod.id ? 'bg-blue-500 text-white' : 'bg-white border border-slate-200 text-slate-500 group-hover:border-blue-200 group-hover:text-blue-500'}`}>
+                  {mod.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-sm truncate">Module {mod.id}</div>
+                  <div className={`text-xs truncate ${activeModuleId === mod.id ? 'text-blue-100' : 'text-slate-400'}`}>
+                    {mod.questions.length} Questions
+                  </div>
+                </div>
+                {activeModuleId === mod.id && <ChevronRight size={16} />}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 flex flex-col h-[calc(100vh-32px)] overflow-hidden relative">
+          <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 p-4 flex items-center gap-4 z-40 sticky top-0">
+            <button onClick={() => setSidebarOpen(true)} className="md:hidden text-slate-600">
+              <Menu size={24} />
+            </button>
+            <div>
+              <h2 className="text-lg font-bold text-slate-800">
+                Module {activeModule.id}: {activeModule.title}
+              </h2>
+            </div>
+          </header>
+
+          <div className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+            <div className="max-w-4xl mx-auto pb-12">
+              
+              <div className="bg-blue-50 border border-blue-100 p-6 rounded-2xl mb-8 flex items-start gap-4">
+                <div className="p-3 bg-blue-100 text-blue-600 rounded-lg">
+                  {activeModule.icon}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-blue-900">Module Overview</h3>
+                  <p className="text-blue-700 text-sm mt-1">{activeModule.description}</p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                {activeModule.questions.map((q) => (
+                  <div key={q.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="p-5 md:p-8">
+                      <div className="flex gap-4 mb-4">
+                        <span className="flex-shrink-0 w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold text-sm shadow-sm">
+                          {q.number}
+                        </span>
+                        <h3 className="font-bold text-lg text-slate-900 leading-snug">{q.q}</h3>
+                      </div>
+                      
+                      <div className="pl-12">
+                        {q.diagram && (
+                           <PhysicsDiagram type={q.diagram} />
+                        )}
+                        <div className="prose prose-slate prose-sm max-w-none text-slate-600">
+                           {q.a.split('\n').map((line, i) => {
+                             if (line.startsWith('**')) return <h4 key={i} className="font-bold text-slate-900 mt-4 mb-2">{line.replace(/\*\*/g, '')}</h4>;
+                             if (line.trim().startsWith('*')) return <div key={i} className="flex gap-2 mb-1"><span className="text-blue-500">•</span><span>{line.replace('*', '')}</span></div>;
+                             return <p key={i} className="mb-2 leading-relaxed">{line}</p>;
+                           })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+            
+            {/* Footer */}
+            <footer className="text-center py-8 border-t border-slate-200 mt-8">
+              <p className="font-bold text-slate-700">Made by Anish Vyapari</p>
+              <p className="text-sm text-slate-500 mt-1">End Sem EP Preparation • Sandip Dhoble Sir Question Bank</p>
+            </footer>
+
+          </div>
+        </main>
+      </div>
+      
+      {/* AI Chat Bot Overlay */}
+      <ChatBot />
+
+    </div>
+  );
+};
+
+export default App;
